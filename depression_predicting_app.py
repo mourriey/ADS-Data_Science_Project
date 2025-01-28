@@ -4,6 +4,17 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 import joblib
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+df = pd.read_csv('selected_depression_cols_df.csv')
+X = df.drop('Depression', axis=1)
+y = df['Depression']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
 
 model = joblib.load("student_depression_predicting_model.pkl")
 
@@ -31,8 +42,7 @@ if st.button("Predict"):
             "Financial Stress": [FinancialStress]     
         }
     )
-    scaler = StandardScaler()
-    input_data_scaled = scaler.fit_transform(input_data)
+    input_data_scaled = scaler.transform(input_data)
     prediction = model.predict(input_data_scaled)
     if prediction[0] == 1:
         st.success("The student has depression")
